@@ -4,9 +4,9 @@ import com.squareup.moshi.Json
 
 data class ConvertCurrency(
     @Json(name = "base")
-    val base: String, // EUR
+    val base: String,
     @Json(name = "date")
-    val date: String, // 2021-02-26
+    val date: String,
     @Json(name = "rates")
     val rates: Rates
 )
