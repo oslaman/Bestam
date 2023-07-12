@@ -4,69 +4,69 @@ import com.squareup.moshi.Json
 
 data class Rates(
     @Json(name = "AUD")
-    val aUD: Double, // 1.5605
+    val aUD: Double,
     @Json(name = "BGN")
-    val bGN: Double, // 1.9558
+    val bGN: Double,
     @Json(name = "BRL")
-    val bRL: Double, // 6.6644
+    val bRL: Double,
     @Json(name = "CAD")
-    val cAD: Double, // 1.5331
+    val cAD: Double,
     @Json(name = "CHF")
-    val cHF: Double, // 1.0986
+    val cHF: Double,
     @Json(name = "CNY")
-    val cNY: Double, // 7.8385
+    val cNY: Double,
     @Json(name = "CZK")
-    val cZK: Double, // 26.195
+    val cZK: Double,
     @Json(name = "DKK")
-    val dKK: Double, // 7.4361
+    val dKK: Double,
     @Json(name = "EUR")
     val eUR: Double,
     @Json(name = "GBP")
-    val gBP: Double, // 0.87053
+    val gBP: Double,
     @Json(name = "HKD")
-    val hKD: Double, // 9.401
+    val hKD: Double,
     @Json(name = "HRK")
-    val hRK: Double, // 7.583
+    val hRK: Double,
     @Json(name = "HUF")
-    val hUF: Double, // 361.43
+    val hUF: Double,
     @Json(name = "IDR")
-    val iDR: Double, // 17353.51
+    val iDR: Double,
     @Json(name = "ILS")
-    val iLS: Double, // 4.0072
+    val iLS: Double,
     @Json(name = "INR")
-    val iNR: Double, // 89.5766
+    val iNR: Double,
     @Json(name = "ISK")
-    val iSK: Double, // 152.9
+    val iSK: Double,
     @Json(name = "JPY")
-    val jPY: Double, // 128.83
+    val jPY: Double,
     @Json(name = "KRW")
-    val kRW: Double, // 1367.1
+    val kRW: Double,
     @Json(name = "MXN")
-    val mXN: Double, // 25.2879
+    val mXN: Double,
     @Json(name = "MYR")
-    val mYR: Double, // 4.9096
+    val mYR: Double,
     @Json(name = "NOK")
-    val nOK: Double, // 10.4012
+    val nOK: Double,
     @Json(name = "NZD")
-    val nZD: Double, // 1.6622
+    val nZD: Double,
     @Json(name = "PHP")
-    val pHP: Double, // 59.09
+    val pHP: Double,
     @Json(name = "PLN")
-    val pLN: Double, // 4.5186
+    val pLN: Double,
     @Json(name = "RON")
-    val rON: Double, // 4.875
+    val rON: Double,
     @Json(name = "RUB")
-    val rUB: Double, // 90.6697
+    val rUB: Double,
     @Json(name = "SEK")
-    val sEK: Double, // 10.1388
+    val sEK: Double,
     @Json(name = "SGD")
-    val sGD: Double, // 1.6106
+    val sGD: Double,
     @Json(name = "THB")
-    val tHB: Double, // 36.799
+    val tHB: Double,
     @Json(name = "TRY")
-    val tRY: Double, // 9.0168
+    val tRY: Double,
     @Json(name = "USD")
-    val uSD: Double, // 1.2121
+    val uSD: Double,
     @Json(name = "ZAR")
-    val zAR: Double // 18.1025
+    val zAR: Double
 )

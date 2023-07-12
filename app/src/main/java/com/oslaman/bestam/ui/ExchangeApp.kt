@@ -22,7 +22,3 @@ fun ExchangeApp() {
 object Route {
     const val HOME = "home"
 }
-
-object Argument {
-    const val USERNAME = "username"
-}
