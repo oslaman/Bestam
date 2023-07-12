@@ -36,7 +36,7 @@ class ExchangeViewModel @Inject constructor(
                 exchangeRatesResponse.value = handleExchangeRatesResponse(response)
             } catch (e: Exception) {
                 exchangeRatesResponse.value =
-                    NetworkResult.Error(message = "No Response. Try Again!!")
+                    NetworkResult.Error(message = "No Response. Try Again.")
             }
         } else {
             exchangeRatesResponse.value = NetworkResult.Error(message = "No Internet Connection")

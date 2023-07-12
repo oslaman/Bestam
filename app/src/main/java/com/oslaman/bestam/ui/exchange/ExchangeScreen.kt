@@ -2,8 +2,10 @@ package com.oslaman.bestam.ui.exchange
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,11 +26,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import com.oslaman.bestam.R
 import com.oslaman.bestam.network.model.Rates
+import com.oslaman.bestam.ui.components.LargeDropdownMenu
 import com.oslaman.bestam.ui.components.NetworkResult
+import com.oslaman.bestam.util.Constants.Companion.CURRENCY_CODES_LIST
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,78 +43,98 @@ fun ExchangeScreen(
 ) {
     val fromCurrencyCode = rememberSaveable{ mutableStateOf("EUR") }
     val toCurrencyCode = rememberSaveable{ mutableStateOf("USD") }
+    val selectedFromCurency = rememberSaveable{ mutableStateOf(-1) }
+    val selectedToCurency = rememberSaveable{ mutableStateOf(-1) }
+
     val exchangeAmount = rememberSaveable{ mutableStateOf("") }
 
     val convertedAmount = rememberSaveable{ mutableStateOf("") }
     val singleConvertedAmount = rememberSaveable{ mutableStateOf("") }
 
-    val scope = rememberCoroutineScope()
-    var isFromSelected: Boolean = true
-    
+    rememberCoroutineScope()
+    val itemList = rememberSaveable{mutableListOf<String>()}
+
+    CURRENCY_CODES_LIST.forEach { item->
+        itemList.add(item.currencyCode)
+    }
+
     Scaffold (
         topBar = {
             CenterAlignedTopAppBar(title = {Text(text = stringResource(id = R.string.currency_exchange))} )
         },
         
     ){  paddingValues ->
-        Column (
-            modifier = Modifier.padding(paddingValues)
-        ){
-            Row {
-                Column {
-                    Text(text = "From")
-                    Text(text = fromCurrencyCode.value)
-                }
-                Column {
-                    Text(text = "To")
-                    Text(text = toCurrencyCode.value)
-                }
-            }
-            TextField(
-                value = exchangeAmount.value,
-                onValueChange = { exchangeAmount.value = it },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    exchangeViewModel.getExchangeRates(provideQueries(fromCurrencyCode.value))
-                    exchangeViewModel.exchangeRatesResponse.observe(
-                        context as LifecycleOwner
-                    ) { response ->
-                        when (response) {
-                            is NetworkResult.Success -> {
-                                response.data?.let {
-                                    if (exchangeAmount.value.isEmpty()) {
-                                        exchangeAmount.value = "1.00"
+        Box (modifier = Modifier.padding(paddingValues)) {
+            Column(
+                modifier = Modifier.padding(15.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                LargeDropdownMenu(
+                    label = "From",
+                    items = itemList,
+                    selectedIndex = selectedFromCurency.value,
+                    onItemSelected = { index, value ->
+                        selectedFromCurency.value = index; fromCurrencyCode.value = value
+                    },
+                )
+                Spacer(modifier = Modifier.padding(10.dp))
+                LargeDropdownMenu(
+                    label = "To",
+                    items = itemList,
+                    selectedIndex = selectedToCurency.value,
+                    onItemSelected = { index, value ->
+                        selectedToCurency.value = index; toCurrencyCode.value = value
+                    },
+                )
+                Spacer(modifier = Modifier.padding(10.dp))
+                TextField(
+                    value = exchangeAmount.value,
+                    onValueChange = { exchangeAmount.value = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(onSearch = {
+                        exchangeViewModel.getExchangeRates(provideQueries(fromCurrencyCode.value))
+                        exchangeViewModel.exchangeRatesResponse.observe(
+                            context as LifecycleOwner
+                        ) { response ->
+                            when (response) {
+                                is NetworkResult.Success -> {
+                                    response.data?.let {
+                                        if (exchangeAmount.value.isEmpty()) {
+                                            exchangeAmount.value = "1.00"
+                                        }
+                                        val toValue = getToValue(toCurrencyCode.value, it.rates)
+                                        val amount = exchangeAmount.value.toDouble()
+                                        convertedAmount.value =
+                                            "${getOutputString(amount * toValue)} ${toCurrencyCode.value}"
+                                        singleConvertedAmount.value =
+                                            "1 ${fromCurrencyCode.value} = ${getOutputString(toValue)} ${toCurrencyCode.value}"
                                     }
-
-                                    val toValue = getToValue(toCurrencyCode.value, it.rates)
-                                    val ammount = exchangeAmount.value.toDouble()
-                                    convertedAmount.value =
-                                        "${getOutputString(ammount * toValue)} ${toCurrencyCode.value}"
-                                    singleConvertedAmount.value =
-                                        "1 ${fromCurrencyCode.value} = ${getOutputString(toValue)} ${toCurrencyCode.value}"
                                 }
-                            }
 
-                            is NetworkResult.Error -> {
-                                Toast.makeText(context, response.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                                is NetworkResult.Error -> {
+                                    Toast.makeText(context, response.message, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
 
-                            is NetworkResult.Loading -> {
-                                Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-                            }
+                                is NetworkResult.Loading -> {
+                                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+                                }
 
+                            }
                         }
-                    }
-                })
-            )
+                    })
+                )
 
-            Text(
-                text = singleConvertedAmount.value,
-                modifier = Modifier.fillMaxWidth(),
-                style = TextStyle(textAlign = TextAlign.Center)
-            )
+                Text(
+                    text = singleConvertedAmount.value,
+                    modifier = Modifier.fillMaxWidth(),
+                    style = TextStyle(textAlign = TextAlign.Center)
+                )
+            }
         }
     }
 

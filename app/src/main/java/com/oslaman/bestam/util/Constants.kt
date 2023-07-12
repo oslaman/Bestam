@@ -1,10 +1,12 @@
 package com.oslaman.bestam.util
 
 import com.oslaman.bestam.domain.CurrencyAndCountry
+import com.oslaman.bestam.BuildConfig
 
 class Constants {
     companion object {
-        const val BASE_URL = "https://api.exchangeratesapi.io/"
+        const val apikey: String = BuildConfig.API_KEY
+        const val BASE_URL = "https://api.exchangeratesapi.io/v1/"
 
         val CURRENCY_CODES_LIST = listOf(
             CurrencyAndCountry("Australia", "AUD"),
