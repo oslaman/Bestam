@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Bestam</string>
+    <string name="please_check_network_connection">Please chech network connection</string>
+    <string name="currency_exchange">Currency Exchange</string>
+</resources>
